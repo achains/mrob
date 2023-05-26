@@ -23,28 +23,26 @@
 
 set -euo pipefail
 export LC_ALL=C
-export MACOSX_DEPLOYMENT_TARGET=11
+export MACOSX_DEPLOYMENT_TARGET=10.15
 
 cd $(dirname $(greadlink -f "${BASH_SOURCE[0]}"))/..
 mkdir -p ./build ./dist ./mrob
 
 cp ./__init__.py ./mrob/__init__.py 
 
-cd ./build
-
 NUMPROC=$(sysctl -n hw.ncpu)
 echo "Running $NUMPROC parallel jobs"
 
-for PYBIN in /Users/runner/hostedtoolcache/Python/3.*/x64/bin/python3.*
+for PYBIN in /Users/runner/hostedtoolcache/Python/3.*/x64/bin/python*?[0-9]
 do
-    cmake .. -DPYTHON_EXECUTABLE:FILEPATH=$PYBIN \
+    cmake -B build -DPYTHON_EXECUTABLE:FILEPATH=$PYBIN \
              -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE \
              -DCMAKE_INSTALL_RPATH="@loader_path" \
              -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$PWD/../bin \
              -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=$PWD/../mrob \
-    && cmake --build . -j $NUMPROC
-done
+    && cmake --build build -j $NUMPROC
 
-cd ../
-python3 -m pip install --user -q build
-python3 -m build --wheel --outdir dist/ .
+    "${PYBIN}" -m pip install build
+    "${PYBIN}" -m build --wheel --outdir dist/ build/
+
+done
