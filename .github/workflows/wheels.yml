@@ -70,11 +70,12 @@ jobs:
 
 
   build_wheel_macOS:
-    name: Build wheel on macOS
-    runs-on: macos-10.15
-    needs: build
+    name: Build wheel on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      matrix:
+        os: [ macos-11 ]
     steps:
       - uses: actions/checkout@v2
         with:

@@ -22,6 +22,7 @@
 
 
 import setuptools
+import logging
 
 
 try:
@@ -39,6 +40,7 @@ try:
             python, abi, plat = _bdist_wheel.get_tag(self)
             print(f"BDIST PY,ABI,PLAT: {python}, {abi}, {plat}") 
             if platform.system() == "Darwin":
+                logging.info(f"=== BDIST PY,ABI,PLAT: {python}, {abi}, {plat} ===")
                 python, abi = 'py3', 'none'
                 name = plat[:plat.find("_")]
                 for i in range(3):
@@ -46,6 +48,7 @@ try:
                 arch = plat
                 version = os.getenv('MACOSX_DEPLOYMENT_TARGET').replace('.', '_')
                 plat = name + "_" + version + "_" + arch
+                logging.info(f"=== BDIST PY,ABI,PLAT: {python}, {abi}, {plat} ===")
             elif platform.system() == "Windows":
                 if ctypes.sizeof(ctypes.c_voidp) * 8 > 32:
                     plat = "win_" + platform.machine().lower()
