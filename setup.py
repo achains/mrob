@@ -39,6 +39,7 @@ try:
         def get_tag(self):
             python, abi, plat = _bdist_wheel.get_tag(self)
             if platform.system() == "Darwin":
+                plat = plat.replace("universal2", "x86_64")
                 logging.info(f"=== BDIST PY,ABI,PLAT: {python}, {abi}, {plat} ===")
             elif platform.system() == "Windows":
                 if ctypes.sizeof(ctypes.c_voidp) * 8 > 32:

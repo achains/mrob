@@ -72,6 +72,7 @@ jobs:
   build_wheel_macOS:
     name: Build wheel on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: build
     strategy:
       fail-fast: false
       matrix:
